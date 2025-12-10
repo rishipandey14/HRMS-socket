@@ -8,7 +8,7 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
     senderId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String, // task-tracker user id
       ref: "User",
       required: true,
     },
@@ -54,7 +54,7 @@ const messageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    unreadBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    unreadBy: [{ type: String, ref: "User" }],
   },
   { timestamps: true }
 );

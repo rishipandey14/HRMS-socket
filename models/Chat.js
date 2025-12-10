@@ -8,12 +8,12 @@ const chatSchema = new mongoose.Schema(
     },
     members: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String, // use task-tracker user ids (string)
         ref: "User",
       },
     ],
     creatorId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "User",
     },
     groupName: {
@@ -29,7 +29,7 @@ const chatSchema = new mongoose.Schema(
     ],
     admins: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "User",
       },
     ],
@@ -39,13 +39,13 @@ const chatSchema = new mongoose.Schema(
     },
     archivedBy: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "User",
       },
     ],
     mutedBy: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "User",
       },
     ],

@@ -9,7 +9,6 @@ const app = express();
 app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
 
-const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 
@@ -18,7 +17,6 @@ const { notFound, errorHandler } = require("./middleware/errorHandler");
 const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/messages", messageRoutes);
 

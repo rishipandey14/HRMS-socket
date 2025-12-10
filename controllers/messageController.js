@@ -5,7 +5,7 @@ const Chat = require("../models/Chat");
 // @route   POST /api/messages
 const sendMessage = async (req, res) => {
   try {
-    const senderId = req.user._id;
+    const senderId = req.user._id?.toString();
     let { chatId, receiverId, content, type, fileUrl, replyTo, forwardedFrom } =
       req.body;
 
@@ -50,7 +50,6 @@ const sendMessage = async (req, res) => {
     await chat.save();
 
     const fullMessage = await Message.findById(message._id)
-      .populate("senderId", "name avatarUrl")
       .populate("replyTo");
 
     res.status(201).json(fullMessage);
@@ -66,7 +65,6 @@ const getMessagesByChat = async (req, res) => {
   try {
     const { chatId } = req.params;
     const messages = await Message.find({ chatId })
-      .populate("senderId", "name avatarUrl")
       .populate("replyTo")
       .sort({ createdAt: 1 });
 
@@ -87,7 +85,7 @@ const editMessage = async (req, res) => {
     const message = await Message.findById(id);
     if (!message) return res.status(404).json({ error: "Message not found" });
 
-    if (message.senderId.toString() !== req.user._id.toString()) {
+    if (message.senderId !== req.user._id?.toString()) {
       return res.status(403).json({ error: "Not authorized" });
     }
 
@@ -113,7 +111,7 @@ const deleteMessage = async (req, res) => {
     const message = await Message.findById(id);
     if (!message) return res.status(404).json({ error: "Message not found" });
 
-    if (message.senderId.toString() !== req.user._id.toString()) {
+    if (message.senderId !== req.user._id?.toString()) {
       return res.status(403).json({ error: "Not authorized" });
     }
 
