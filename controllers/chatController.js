@@ -6,7 +6,7 @@ const Message = require("../models/Message");
 // @route   POST /api/chats/group
 const createGroupChat = async (req, res) => {
   const { members, groupName, groupAvatar } = req.body;
-  const creatorId = req.user._id;
+  const creatorId = req.user._id?.toString();
 
   if (!members || !Array.isArray(members) || members.length < 2) {
     return res.status(400).json({
@@ -20,8 +20,8 @@ const createGroupChat = async (req, res) => {
 
   try {
     const uniqueMembers = new Set([
-      ...members.map((id) => id.toString()),
-      creatorId.toString(),
+      ...members.map((id) => id.toString ? id.toString() : id),
+      creatorId.toString ? creatorId.toString() : creatorId,
     ]);
 
     const groupChat = await Chat.create({
@@ -32,11 +32,10 @@ const createGroupChat = async (req, res) => {
       admins: [creatorId],
     });
 
-    const populatedChat = await Chat.findById(groupChat._id)
-      .populate("members", "-password")
-      .populate("admins", "-password");
+    // Don't populate User since chat service doesn't own User model
+    const savedChat = await Chat.findById(groupChat._id);
 
-    res.status(201).json(populatedChat);
+    res.status(201).json(savedChat);
   } catch (error) {
     console.error("Error creating group chat:", error);
     res.status(500).json({ error: "Failed to create group chat" });
@@ -47,24 +46,9 @@ const createGroupChat = async (req, res) => {
 // @route   GET /api/chats
 const getAllChats = async (req, res) => {
   try {
-    const userId = req.user._id;
-
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-      return res
-        .status(400)
-        .json({ error: "Invalid or missing userId in query" });
-    }
+    const userId = req.user._id?.toString();
 
     const chats = await Chat.find({ members: userId })
-      .populate("members", "-password")
-      .populate("admins", "-password")
-      .populate({
-        path: "latestMessage",
-        populate: {
-          path: "senderId",
-          select: "name avatarUrl",
-        },
-      })
       .sort({ updatedAt: -1 })
       .lean();
 
@@ -101,15 +85,7 @@ const getChatById = async (req, res) => {
 
   try {
     const chat = await Chat.findById(chatId)
-      .populate("members", "-password")
-      .populate("admins", "-password")
-      .populate({
-        path: "latestMessage",
-        populate: {
-          path: "senderId",
-          select: "name avatarUrl",
-        },
-      })
+      .populate("messages")
       .lean();
 
     if (!chat) {
@@ -126,7 +102,7 @@ const getChatById = async (req, res) => {
 // @desc    Update a group chat
 // @route   PUT /api/chats/group/:id
 const updateGroupChat = async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user._id?.toString();
   const { groupName, groupAvatar, members, admins } = req.body;
   const chatId = req.params.id;
 
@@ -140,9 +116,7 @@ const updateGroupChat = async (req, res) => {
       return res.status(404).json({ error: "Group chat not found" });
     }
 
-    const isAdmin = chat.admins.some(
-      (adminId) => adminId.toString() === userId.toString()
-    );
+    const isAdmin = chat.admins.some((adminId) => adminId === userId);
     if (!isAdmin) {
       return res
         .status(403)
@@ -168,9 +142,7 @@ const updateGroupChat = async (req, res) => {
 
     await chat.save();
 
-    const updatedChat = await Chat.findById(chat._id)
-      .populate("members", "-password")
-      .populate("admins", "-password");
+    const updatedChat = await Chat.findById(chat._id).lean();
 
     res.status(200).json(updatedChat);
   } catch (error) {
@@ -224,7 +196,7 @@ const toggleArchive = async (req, res) => {
 // @route   PUT /api/chats/:id/mute
 const toggleMute = async (req, res) => {
   const chatId = req.params.id;
-  const userId = req.user._id;
+  const userId = req.user._id?.toString();
 
   if (!mongoose.Types.ObjectId.isValid(chatId)) {
     return res.status(400).json({ error: "Invalid chat ID" });
@@ -265,7 +237,7 @@ const toggleMute = async (req, res) => {
 // @route   DELETE /api/chats/:id
 const deleteGroup = async (req, res) => {
   const chatId = req.params.id;
-  const userId = req.user._id;
+  const userId = req.user._id?.toString();
 
   if (!mongoose.Types.ObjectId.isValid(chatId)) {
     return res.status(400).json({ error: "Invalid chat ID" });
@@ -277,9 +249,7 @@ const deleteGroup = async (req, res) => {
       return res.status(404).json({ error: "Group chat not found" });
     }
 
-    const isAdmin = chat.admins.some(
-      (adminId) => adminId.toString() === userId.toString()
-    );
+    const isAdmin = chat.admins.some((adminId) => adminId === userId);
     if (!isAdmin) {
       return res
         .status(403)
@@ -299,17 +269,15 @@ const deleteGroup = async (req, res) => {
 // @route   PUT /api/chats/group/:id/leave
 const leaveGroup = async (req, res) => {
   const chatId = req.params.id;
-  const userId = req.user._id;
+  const userId = req.user._id?.toString();
 
   try {
     const chat = await Chat.findById(chatId);
     if (!chat || !chat.isGroup)
       return res.status(404).json({ error: "Group not found" });
 
-    chat.members = chat.members.filter(
-      (m) => m.toString() !== userId.toString()
-    );
-    chat.admins = chat.admins.filter((a) => a.toString() !== userId.toString());
+    chat.members = chat.members.filter((m) => m !== userId);
+    chat.admins = chat.admins.filter((a) => a !== userId);
 
     await chat.save();
 

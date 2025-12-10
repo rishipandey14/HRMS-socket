@@ -6,14 +6,15 @@ function messageEvents(io, socket) {
     try {
       if (!socket.userId) {
         console.error(
-          "send_message error: socket.userId is undefined. Cannot send message."
+          "send_message error: socket.userId is undefined. Cannot send message.",
+          { socketId: socket.id, socketData: socket.data }
         );
         return;
       }
 
       const { chatId, content, type } = data;
       if (!chatId || !content || !type) {
-        console.error("send_message error: Missing data fields.");
+        console.error("send_message error: Missing data fields.", data);
         return;
       }
 
@@ -26,7 +27,7 @@ function messageEvents(io, socket) {
       }
 
       const unreadBy = chat.members.filter(
-        (memberId) => memberId.toString() !== socket.userId.toString()
+        (memberId) => memberId !== socket.userId
       );
 
       const message = await Message.create({
@@ -37,10 +38,9 @@ function messageEvents(io, socket) {
         unreadBy,
       });
 
-      const fullMessage = await Message.findById(message._id).populate(
-        "senderId",
-        "name avatarUrl"
-      );
+      // Don't populate senderId - it references non-existent User model
+      // Frontend will fetch user data separately via task-tracker
+      const fullMessage = await Message.findById(message._id);
 
       chat.latestMessage = message._id;
       await chat.save();
