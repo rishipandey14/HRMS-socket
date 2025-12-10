@@ -1,0 +1,64 @@
+{
+    "info": {
+        "_postman_id": "376f3375-39bf-40ea-8ccf-089c00f5fe87",
+        "name": "Authentication",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Register",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://{{base_url}}/api/auth/register",
+                    "path": [
+                        "api",
+                        "auth",
+                        "register"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Login",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://{{base_url}}/api/auth/login",
+                    "path": [
+                        "api",
+                        "auth",
+                        "login"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+                }
+            }
+        }
+    ]
+}

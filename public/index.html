@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chat App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="auth-container">
+      <h2>Login / Register</h2>
+      <input id="email" placeholder="Email" />
+      <input id="password" type="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <button onclick="register()">Register</button>
+      <div id="auth-error"></div>
+    </div>
+
+    <div id="chat-container" style="display: none">
+      <div class="sidebar">
+        <h2>Chats</h2>
+        <ul id="chat-list"></ul>
+      </div>
+
+      <div class="chat-main">
+        <div class="chat-header">
+          <h3 id="chat-title">Select a chat</h3>
+        </div>
+
+        <div id="messages" class="chat-messages"></div>
+
+        <div
+          id="typing-indicator"
+          style="
+            display: none;
+            font-style: italic;
+            color: gray;
+            padding: 4px 10px;
+          "
+        ></div>
+
+        <div class="chat-input">
+          <input
+            id="messageInput"
+            placeholder="Type a message..."
+            oninput="handleTyping()"
+          />
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="api.js"></script>
+    <script src="socket.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

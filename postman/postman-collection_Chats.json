@@ -1,0 +1,231 @@
+{
+    "info": {
+        "_postman_id": "e5925d46-8fcb-4bc4-ae0d-db134314b64d",
+        "name": "Chats",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Get all chats",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://{{base_url}}/api/chats?userId={{user_id}}",
+                    "query": [
+                        {
+                            "key": "userId",
+                            "value": "{{user_id}}"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "chats"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]                
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Create Group Chat",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://{{base_url}}/api/chats/group",
+                    "path": [
+                        "api",
+                        "chats",
+                        "group"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]                
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"members\": [\n    \"{{user_id}}\",\n    \"{{user_id_2}}\"\n  ],\n  \"creatorId\": \"{{user_id}}\",\n  \"groupName\": \"Test Group\",\n  \"groupAvatar\": \"url.png\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Get Chat by ID",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://{{base_url}}/api/chats/{{chat_id}}",
+                    "path": [
+                        "api",
+                        "chats",
+                        "{{chat_id}}"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Archive Chat",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://{{base_url}}/api/chats/{{chat_id}}/archive",
+                    "path": [
+                        "api",
+                        "chats",
+                        "{{chat_id}}",
+                        "archive"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Update Group Chat",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://{{base_url}}/api/chats/group/{{chat_id}}",
+                    "path": [
+                        "api",
+                        "chats",
+                        "group",
+                        "{{chat_id}}"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"members\": [\n    \"{{user_id_3}}\",\n    \"{{user_id_4}}\"\n  ],\n  \"admins\": [\"{{user_id_4}}\"],\n  \"groupName\": \"Test Group1\",\n  \"groupAvatar\": \"new.png\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Mute Chat",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://{{base_url}}/api/chats/{{chat_id}}/mute",
+                    "path": [
+                        "api",
+                        "chats",
+                        "{{chat_id}}",
+                        "mute"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Delete Group",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "http://{{base_url}}/api/chats/{{chat_id}}",
+                    "path": [
+                        "api",
+                        "chats",
+                        "{{chat_id}}"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Leave Group Chat",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://{{base_url}}/api/chats/group/{{chat_id}}/leave",
+                    "path": [
+                        "api",
+                        "chats",
+                        "group",
+                        "{{chat_id}}",
+                        "leave"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,180 @@
+{
+    "info": {
+        "_postman_id": "a9f1b662-ea36-456d-a832-2a532b76957b",
+        "name": "Message",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Send First Message (New 1-1 chat)",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://{{base_url}}/api/messages",
+                    "path": [
+                        "api",
+                        "messages"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"receiverId\": \"{{user_id_3}}\",\n  \"content\": \"Hey, first message!\",\n  \"type\": \"text\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Send Message (Existing Chat)",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://{{base_url}}/api/messages",
+                    "path": [
+                        "api",
+                        "messages"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"chatId\": \"{{chat_id}}\",\n  \"content\": \"This is a message in an existing chat\",\n  \"type\": \"text\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Get Messages of a Chat",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://{{base_url}}/api/messages/{{chat_id}}",
+                    "path": [
+                        "api",
+                        "messages",
+                        "{{chat_id}}"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Edit Message",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://{{base_url}}/api/messages/{{message_id}}",
+                    "path": [
+                        "api",
+                        "messages",
+                        "{{message_id}}"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"newContent\": \"Updated message content\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Delete Message",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "http://{{base_url}}/api/messages/{{message_id}}",
+                    "path": [
+                        "api",
+                        "messages",
+                        "{{message_id}}"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Mark Message as Seen",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://{{base_url}}/api/messages/{{message_id}}/seen",
+                    "path": [
+                        "api",
+                        "messages",
+                        "{{message_id}}",
+                        "seen"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "{{base_url}}"
+                    ]
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        }
+    ]
+}
