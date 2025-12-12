@@ -27,7 +27,7 @@ function messageEvents(io, socket) {
       }
 
       const unreadBy = chat.members.filter(
-        (memberId) => memberId !== socket.userId
+        (memberId) => memberId.toString() !== socket.userId.toString()
       );
 
       const message = await Message.create({
@@ -36,6 +36,7 @@ function messageEvents(io, socket) {
         content,
         type,
         unreadBy,
+        status: new Map([[socket.userId, "sent"]]), // Initialize sender's status
       });
 
       // Don't populate senderId - it references non-existent User model
