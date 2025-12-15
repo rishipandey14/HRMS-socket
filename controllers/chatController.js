@@ -42,6 +42,39 @@ const createGroupChat = async (req, res) => {
   }
 };
 
+// @desc    Create new direct chat
+// @route   POST /api/chats
+const createDirectChat = async (req, res) => {
+  const { members } = req.body;
+
+  if (!members || !Array.isArray(members) || members.length !== 2) {
+    return res.status(400).json({ message: "Direct chat must have exactly 2 members" });
+  }
+
+  try {
+    // Check if a direct chat already exists
+    const existingChat = await Chat.findOne({
+      isGroup: false,
+      members: { $all: members, $size: 2 },
+    });
+
+    if (existingChat) {
+      return res.status(200).json(existingChat);
+    }
+
+    // Create a new direct chat
+    const directChat = await Chat.create({
+      isGroup: false,
+      members,
+    });
+
+    res.status(201).json(directChat);
+  } catch (error) {
+    console.error("Error creating direct chat:", error);
+    res.status(500).json({ error: "Failed to create direct chat" });
+  }
+};
+
 // @desc    Get all chats for a user
 // @route   GET /api/chats
 const getAllChats = async (req, res) => {
@@ -233,9 +266,9 @@ const toggleMute = async (req, res) => {
   }
 };
 
-// @desc    Delete a group chat by ID
+// @desc    Delete a chat by ID (group or direct)
 // @route   DELETE /api/chats/:id
-const deleteGroup = async (req, res) => {
+const deleteChat = async (req, res) => {
   const chatId = req.params.id;
   const userId = req.user._id?.toString();
 
@@ -245,23 +278,34 @@ const deleteGroup = async (req, res) => {
 
   try {
     const chat = await Chat.findById(chatId);
-    if (!chat || !chat.isGroup) {
-      return res.status(404).json({ error: "Group chat not found" });
+    if (!chat) {
+      return res.status(404).json({ error: "Chat not found" });
     }
 
-    const isAdmin = chat.admins.some((adminId) => adminId === userId);
-    if (!isAdmin) {
-      return res
-        .status(403)
-        .json({ error: "Only group admins can delete the group chat" });
+    if (chat.isGroup) {
+      // Group chat: Only admins can delete
+      const isAdmin = chat.admins.some((adminId) => adminId === userId);
+      if (!isAdmin) {
+        return res
+          .status(403)
+          .json({ error: "Only group admins can delete the group chat" });
+      }
+    } else {
+      // Direct chat: Only members can delete
+      const isMember = chat.members.some((memberId) => memberId === userId);
+      if (!isMember) {
+        return res
+          .status(403)
+          .json({ error: "Only chat members can delete the direct chat" });
+      }
     }
 
     await Chat.findByIdAndDelete(chatId);
 
-    res.status(200).json({ message: "Group chat deleted successfully" });
+    res.status(200).json({ message: "Chat deleted successfully" });
   } catch (error) {
-    console.error("Error deleting group chat:", error);
-    res.status(500).json({ error: "Failed to delete group chat" });
+    console.error("Error deleting chat:", error);
+    res.status(500).json({ error: "Failed to delete chat" });
   }
 };
 
@@ -289,12 +333,13 @@ const leaveGroup = async (req, res) => {
 };
 
 module.exports = {
+  createDirectChat,
   createGroupChat,
   getAllChats,
   getChatById,
   updateGroupChat,
   toggleArchive,
   toggleMute,
-  deleteGroup,
+  deleteChat,
   leaveGroup,
 };
